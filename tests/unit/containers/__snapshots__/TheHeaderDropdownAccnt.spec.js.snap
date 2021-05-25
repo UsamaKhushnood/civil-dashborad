@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TheHeaderDropdownAccnt.vue renders correctly 1`] = `
+<cdropdown-stub
+  addmenuclasses="pt-0"
+  caret="true"
+  class="c-header-nav-items"
+  flip="true"
+  innav="true"
+  offset="0,0"
+  placement="bottom-end"
+  togglertext="Dropdown"
+/>
+`;
