@@ -10,24 +10,13 @@
                   <h5><strong>Header Details</strong></h5>
                   <hr />
                 </div>
-                <!--<div class="col-12 col-md-4">
-                  <div class="form-group mt-4">
-                    <label><strong>Upload Images</strong></label> <br />
-                    <input
-                      type="file"
-                      multiple
-                      @change="uploadImage($event,'images')"
-                      class="btn btn-primary btn-block btn-sm"
-                    />
-                  </div>
-                </div>-->
                 <div class="col-12 col-md-4">
                   <div class="form-group mt-4">
                     <label><strong>Upload Logo</strong></label> <br />
                     <input
                       type="file"
                       class="btn btn-primary btn-block btn-sm"
-                      @change="uploadImage($event,'logo')"
+                      @change="uploadImage($event, 'logo')"
                     />
                   </div>
                 </div>
@@ -37,7 +26,7 @@
                     <input
                       type="file"
                       class="btn btn-primary btn-block btn-sm"
-                       @change="uploadImage($event,'favicon')"
+                      @change="uploadImage($event, 'favicon')"
                     />
                   </div>
                 </div>
@@ -138,7 +127,9 @@
                 </div>
 
                 <div class="col-12 text-right mt-3">
-                  <button @click="saveHeaderDetails()" class="btn btn-primary">Save Information</button>
+                  <button @click="saveHeaderDetails()" class="btn btn-primary">
+                    Save Information
+                  </button>
                 </div>
               </div>
             </form>
@@ -200,7 +191,7 @@ export default {
       pagination: {},
       loading: false,
       visible: false,
-      checkAlready:false,
+      checkAlready: false,
       user: {
         first_name: null,
         last_name: null,
@@ -211,10 +202,10 @@ export default {
         job_title: null,
         status: "active",
       },
-      faviconImage:null,
-      logoImage:null,
+      faviconImage: null,
+      logoImage: null,
       newHeader: {
-        image:[],
+        image: [],
         logo: null,
         favicon: null,
         title_en: null,
@@ -225,7 +216,7 @@ export default {
         twitter_url: null,
         telephone: null,
         email: null,
-        _id:null
+        _id: null,
       },
       data: [],
       columns: [
@@ -278,28 +269,32 @@ export default {
         .then((response) => {
           console.log("response");
           console.log(response.data.contentArabic);
-          if(response.data != ""){
+          if (response.data != "") {
             this.checkAlready = true;
-          this.newHeader= {
-            image:[],
-            logo: response.data.logoFilePath,
-            favicon: response.data.favIconFilePath,
-            title_en: response.data.nameEnglish,
-            title_ar: response.data.nameArabic,
-            content_en: response.data.contentEnglish,
-            content_ar: response.data.contentArabic,
-            mobile: response.data.mobileNo? response.data.mobileNo : null,
-            twitter_url: response.data.twitterUrl? response.data.twitterUrl : null,
-            telephone: response.data.telephoneNo? response.data.telephoneNo : null,
-            email: response.data.email? response.data.email : null,
-            _id:response.data._id,
-          },
-          console.log("llflf");
-          console.log(response.data);
+            (this.newHeader = {
+              image: [],
+              logo: response.data.logoFilePath,
+              favicon: response.data.favIconFilePath,
+              title_en: response.data.nameEnglish,
+              title_ar: response.data.nameArabic,
+              content_en: response.data.contentEnglish,
+              content_ar: response.data.contentArabic,
+              mobile: response.data.mobileNo ? response.data.mobileNo : null,
+              twitter_url: response.data.twitterUrl
+                ? response.data.twitterUrl
+                : null,
+              telephone: response.data.telephoneNo
+                ? response.data.telephoneNo
+                : null,
+              email: response.data.email ? response.data.email : null,
+              _id: response.data._id,
+            }),
+              console.log("llflf");
+            console.log(response.data);
           }
         });
     },
-     openNotificationWithIcon(type, message, placement) {
+    openNotificationWithIcon(type, message, placement) {
       this.$notification[type]({
         message: "Response",
         description: message,
@@ -321,15 +316,15 @@ export default {
             // this.newCategory.image = response.data.secure_url;
             // console.log(response.data);
             switch (image_type) {
-              case 'images': 
+              case "images":
                 this.newHeader.image.push(response.data.secure_url);
                 break;
-              case 'logo': 
+              case "logo":
                 this.newHeader.logo = response.data.secure_url;
                 this.logoImage = event.target.files[0];
-             
+
                 break;
-              case 'favicon':
+              case "favicon":
                 this.newHeader.favicon = response.data.secure_url;
                 this.faviconImage = event.target.files[0];
                 console.log(this.newHeader.favicon);
@@ -398,109 +393,115 @@ export default {
         }
       }
     },
-    saveHeaderDetails () {
+    saveHeaderDetails() {
       console.log(this.checkAlready);
       console.log(this.newHeader);
-  if(this.checkAlready == false){
-    
-     console.log("saving header");
-      let newHeader = new FormData();
-      newHeader.append("logoImage", this.logoImage);
-      newHeader.append("favIcon", this.faviconImage);
-      newHeader.append("email", this.newHeader.email);
-      newHeader.append("nameEnglish", this.newHeader.title_en);
-      newHeader.append("nameArabic", this.newHeader.title_ar);
-      newHeader.append("contentEnglish", this.newHeader.content_en);
-      newHeader.append("contentArabic", this.newHeader.content_ar);
-      newHeader.append("mobileNo", this.newHeader.mobile);
-      newHeader.append("twitterUrl", this.newHeader.twitter_url);
-      newHeader.append("telephoneNo", this.newHeader.telephone);
-      axios
-      .post(this.APIServer + "admin/createHeader", newHeader,
-      {
-            headers: { Authorization: this.$store.state.token },
-      }
-          )
-      .then((response) => {
-                console.log(response.data);
-        if (response.data.status == true) {
-          this.openNotificationWithIcon(
-            "success",
-            "Header updated successfully",
-            "bottomRight"
-          );
-        } else {
-          this.openNotificationWithIcon(
-            "warning",
-            response.data.message,
-            "bottomRight"
-          );
-        }
-      })
-      .catch((e) => {
-        console.log("API failed");
-        console.log(e);
-        this.openNotificationWithIcon(
-          "error",
-          response.data.message,
-          "bottomRight"
-        );
-      });
-  }
-else {
-console.log("2");
- console.log("saving header");
-      let newHeader = new FormData();
-      newHeader.append("logoImage", this.logoImage);
-      newHeader.append("favIcon", this.faviconImage);
-      newHeader.append("email", this.newHeader.email);
-      newHeader.append("nameEnglish", this.newHeader.title_en);
-      newHeader.append("nameArabic", this.newHeader.title_ar);
-      newHeader.append("contentEnglish", this.newHeader.content_en);
-      newHeader.append("contentArabic", this.newHeader.content_ar);
-      newHeader.append("mobileNo", this.newHeader.mobile);
-      newHeader.append("twitterUrl", this.newHeader.twitter_url);
-      newHeader.append("telephoneNo", this.newHeader.telephone);
-      newHeader.append("headerId", this.newHeader._id);
+      if (this.checkAlready == false) {
+        console.log("saving header");
+        let newHeader = new FormData();
+        newHeader.append("logoImage", this.logoImage);
+        newHeader.append("favIcon", this.faviconImage);
+        newHeader.append("email", this.newHeader.email);
+        newHeader.append("nameEnglish", this.newHeader.title_en);
+        newHeader.append("nameArabic", this.newHeader.title_ar);
+        newHeader.append("contentEnglish", this.newHeader.content_en);
+        newHeader.append("contentArabic", this.newHeader.content_ar);
+        newHeader.append("mobileNo", this.newHeader.mobile);
+        newHeader.append("twitterUrl", this.newHeader.twitter_url);
+        newHeader.append("telephoneNo", this.newHeader.telephone);
 
-      axios
-      .patch(this.APIServer + "admin/updateHeader", newHeader,
-      {
-            headers: { Authorization: this.$store.state.token },
-      }
-      )
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.status == true) {
-          this.openNotificationWithIcon(
-            "success",
-            "Header updated successfully",
-            "bottomRight"
-          );
-        } else {
-          console.log(response.data);
-          this.openNotificationWithIcon(
-            "warning",
-            response.data.message,
-            "bottomRight"
-          );
-        }
-      })
-      .catch((e) => {
-        console.log("API failed");
-        console.log(e);
-        this.openNotificationWithIcon(
-          "error",
-          response.data.message,
-          "bottomRight"
-        );
-      });
-}
+        axios
+          .patch(this.APIServer + "admin/updateHeader",
+          {
+            nameEnglish: this.newHeader.title_en,
+            nameArabic: this.newHeader.title_ar,
+            contentEnglish: this.newHeader.content_en,
+            contentArabic: this.newHeader.content_ar,
+            email: this.newHeader.email,
+            twitterUrl: this.newHeader.twitter_url,
+            telephoneNo: this.newHeader.telephone,
+            mobileNo: this.newHeader.mobile,
+            logoImage: this.newHeader.logo,
+            favIcon: this.newHeader.favicon,
+            headerId: this.newHeader._id
 
+          }, {
+            headers: { Authorization: this.$store.state.token },
+          })
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.status == true) {
+              this.openNotificationWithIcon(
+                "success",
+                "Header updated successfully",
+                "bottomRight"
+              );
+            } else {
+              this.openNotificationWithIcon(
+                "warning",
+                response.data.message,
+                "bottomRight"
+              );
+            }
+          })
+          .catch((e) => {
+            console.log("API failed");
+            console.log(e);
+            this.openNotificationWithIcon(
+              "error",
+              response.data.message,
+              "bottomRight"
+            );
+          });
+      } else {
+        console.log("saving header");
+        let newHeader = new FormData();
+        newHeader.append("logoImage", this.logoImage);
+        newHeader.append("favIcon", this.faviconImage);
+        newHeader.append("email", this.newHeader.email);
+        newHeader.append("nameEnglish", this.newHeader.title_en);
+        newHeader.append("nameArabic", this.newHeader.title_ar);
+        newHeader.append("contentEnglish", this.newHeader.content_en);
+        newHeader.append("contentArabic", this.newHeader.content_ar);
+        newHeader.append("mobileNo", this.newHeader.mobile);
+        newHeader.append("twitterUrl", this.newHeader.twitter_url);
+        newHeader.append("telephoneNo", this.newHeader.telephone);
+        newHeader.append("headerId", this.newHeader._id);
+
+        axios
+          .patch(this.APIServer + "admin/updateHeader", newHeader, {
+            headers: { Authorization: this.$store.state.token },
+          })
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.status == true) {
+              this.openNotificationWithIcon(
+                "success",
+                "Header updated successfully",
+                "bottomRight"
+              );
+            } else {
+              console.log(response.data);
+              this.openNotificationWithIcon(
+                "warning",
+                response.data.message,
+                "bottomRight"
+              );
+            }
+          })
+          .catch((e) => {
+            console.log("API failed");
+            console.log(e);
+            this.openNotificationWithIcon(
+              "error",
+              response.data.message,
+              "bottomRight"
+            );
+          });
+      }
 
       //   this.loading = true;
-     
-    }
+    },
   },
 };
 </script>

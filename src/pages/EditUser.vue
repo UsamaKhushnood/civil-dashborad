@@ -324,11 +324,12 @@ export default {
       console.log("llldd");
       console.log(this.$store.state.token);
       axios
-        .post(this.APIServer + "admin/updateUser", newUser, {
+        .patch(this.APIServer + "admin/updateUser", newUser, {
           headers: { Authorization: this.$store.state.token },
         })
         .then((response) => {
           console.log("ppp");
+            console.log("success horrayay!!!", response.data);
           if (response.data.status == true) {
             this.$router.push({ path: "/users" });
             this.openNotificationWithIcon(

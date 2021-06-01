@@ -57,12 +57,12 @@
             <div class="row">
               <div class="ml-3 mr-3 table-responsive">
                 <table
-                  class=" table table-striped overflow-auto"
+                  class="table table-striped overflow-auto"
                   style="
                     margin-bottom: 1rem;
-                    color: black; 
+                    color: black;
                     display: inline-table;
-                    "
+                  "
                 >
                   <thead class="">
                     <tr>
@@ -99,7 +99,6 @@
                             class="fa fa-eye"
                             aria-hidden="true"
                           ></i>
-
                           <i
                             v-if="currentUserRole == 'read,write,update,delete'"
                             @click="
@@ -116,6 +115,29 @@
                     <tr></tr>
                   </tbody>
                 </table>
+                <b-modal v-model="viewModal" hide-footer title="Job Details">
+                  <div class="row">
+                    <div class="col-12 text-center mt-2 mb-3">
+                      <p>
+                        <strong class="text-main"
+                          >Job ID {{ viewUser._id }}</strong
+                        >
+                      </p>
+                    </div>
+                    <div class="col-12 col-md-6 mt-2">
+                      <label for="id"><strong>Created At</strong></label>
+                      <p>{{ viewUser.createdAt }}</p>
+                    </div>
+                    <div class="col-12 col-md-6 mt-2">
+                      <label for="id"><strong>Students</strong></label>
+                      <p>{{ viewUser.student }}</p>
+                    </div>
+                    <div class="col-12 col-md-6 mt-2">
+                      <label for="first_name"><strong>Status</strong></label>
+                      <p>{{ viewUser.status }}</p>
+                    </div>
+                  </div>
+                </b-modal>
               </div>
             </div>
 
@@ -159,7 +181,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Vue from "vue";
 import moment from "moment";
-Vue.filter("formatDate", function(value) {
+Vue.filter("formatDate", function (value) {
   if (value) {
     return moment(String(value)).format("MM/DD/YYYY");
   }
@@ -174,6 +196,12 @@ export default {
 
   data() {
     return {
+      viewUser: {
+        _id: null,
+        Status: null,
+        createdAt: null,
+        student: null,
+      },
       dateRange: null,
       filterObject: {
         studentFirstName: "",
@@ -270,7 +298,7 @@ export default {
     this.getAllMyJobs();
   },
   computed: {
-    FilterCategory: function() {
+    FilterCategory: function () {
       return this.items.filter((item) => {
         return (
           (item.nameEnglish || "")
@@ -301,7 +329,10 @@ export default {
       link.setAttribute("download", "Jobs.csv");
       link.click();
     },
-
+    viewUserData(record) {
+      this.viewModal = !this.viewModal;
+      this.viewUser = record;
+    },
     exportPDF() {
       var vm = this;
       let columns = [];

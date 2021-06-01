@@ -64,6 +64,9 @@ import Promotions from "@/pages/Promotions.vue";
 import SpecialOffers from "@/pages/SpecialOffers.vue";
 import CreateOffer from "@/pages/CreateOffer.vue";
 import EditOffer from "@/pages/EditOffer.vue";
+import ChatHistory from '@/pages/ChatHistory.vue'
+import Chat from '@/pages/Chat.vue'
+import RatingHistory from '@/pages/RatingHistory.vue'
 
 Vue.use(Router)
 
@@ -326,6 +329,30 @@ function configRoutes() {
                         path: "jobs",
                         name: "jobs",
                         component: Jobs,
+                        meta: {
+                            requireAuth: true,
+                        },
+                    },
+                    {
+                        path: "chat-history",
+                        name: "Chat History",
+                        component: ChatHistory,
+                        meta: {
+                            requireAuth: true,
+                        },
+                    },
+                    {
+                        path: "chat/:id",
+                        name: "Chat History",
+                        component: Chat,
+                        meta: {
+                            requireAuth: true,
+                        },
+                    },
+                    {
+                        path: "rating-history",
+                        name: "Rating History",
+                        component: RatingHistory,
                         meta: {
                             requireAuth: true,
                         },
